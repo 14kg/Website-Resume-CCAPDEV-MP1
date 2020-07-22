@@ -1,3 +1,81 @@
+
+html{
+    height: 100%;
+    font-size: 24px;
+}
 body{
-    background-color: aquamarine;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1000px;
+    min-height: 100%;
+    position: relative;
+    z-index: -1;
+    background-color: white);
+    font-size: 0.93rem;
+    line-height: 1.46;
+    font-family: Arial, Helvetica, sans-serif;
+}
+div.page_container{
+    padding: 3rem 0 18rem 0;
+    margin-left: 12rem;
+    margin-right: 2.5rem;
+    background-color: white;
+}
+.banner{
+    display: block;
+    clear: both;
+    margin-bottom: 2em;
+    border-top: solid 3px #333333;
+    padding-top: 5px;
+    float: left;
+    position: absolute;
+    margin-left: 0;
+    left: 2.5em;
+    width: calc(2.5rem*3);
+    text-align: right;
+}
+.bannername{
+    font-size: 125%;
+    line-height: 1.10;
+    margin-top: 0rem;
+    margin-bottom: 0.8rem;
+    font-weight: bolder;
+    border-top: 0;
+    padding-top: 0;
+}
+.bannersub{
+    display: block;
+    font-size: 100%;
+    line-height: 1.25;
+    font-style: italic;
+}
+p{
+    margin-bottom: 1em;
+}
+#next{
+    left: 0;
+    border-left: 1rem solid white;
+}
+#prev{
+    right: 0;
+    border-right: 1rem solid white;
+}
+.side{
+    top: 0;
+    bottom: 0;
+    width: 5rem;
+    z-index: -1;
+    position: fixed;
+}
+#footer{
+    position: fixed;
+    bottom: 0;
+    background: white;
+    margin: auto;
+    left: 2.5rem;
+    right: 2.5rem;
+    max-width: 1000px;
+    font-size: 0.9rem;
+    line-height: 1.25;
 }

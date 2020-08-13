@@ -9,7 +9,7 @@ body {
     height: 100vh;
 }
 :root {
-    --background: #031e11;
+    --background: #0C0C0C;
     --size: 1.5;
 }
 /* to see yourself like in a mirror */
@@ -96,7 +96,7 @@ body {
 }
 /* glow */
 .terminal {
-    text-shadow: 0 0.2rem 1rem #0c7b46;
+    text-shadow: 0 0.2rem 1rem #767676;
 }
 /* based on
 https://blog.carbonfive.com/2015/01/07/vintage-terminal-effect-in-css3/

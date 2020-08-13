@@ -1,26 +1,20 @@
+#terminal{
+    width:100%;
+    height:100%;
+    margin:auto;
+}
+
 @media only screen
 and (min-width : 1224px) {
     body{
-        --size: 1.2;
-    }
-    #terminal{
-        max-width:800px;
-        height:100%;
-        margin: auto;
+        --size: 1.5;
     }
 }
-
-
 
 @media only screen
 and (min-device-width : 320px)
 and (max-device-width : 480px) {
     body{
         --size: 3;
-    }
-    #terminal{
-        width:100%;
-        height:100%;
-        margin: auto;
     }
 }

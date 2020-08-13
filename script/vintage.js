@@ -156,5 +156,5 @@ function clear() {
     term.clear();
 }
 
-github('jcubic/jquery.terminal');
-cssVars(); // ponyfill
+// github('jcubic/jquery.terminal');
+// cssVars(); // ponyfill

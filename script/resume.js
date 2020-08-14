@@ -919,7 +919,7 @@ function ready() {
         console.log(window.location.pathname)
         if(window.location.pathname=="/edit.html"){
             t.echo('type <a href="javascript:t.exec(\'login\')" class="navlink">login</a> to start</b>',{raw: true});
-        }else if(window.location.pathname=="/index.html"){
+        }else{
             t.echo(
                 'Use these commands to get started:<br>'+
                 ' - <a href="javascript:t.exec(\'about\')" class="navlink">about</a><br>'+

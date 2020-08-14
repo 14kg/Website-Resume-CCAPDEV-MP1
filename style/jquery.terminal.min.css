@@ -195,7 +195,7 @@ body.full-screen-terminal .terminal {
     min-height: calc(var(--size, 1) * 14px);
 }
 .terminal .terminal-output > div:not(.raw) div {
-    white-space: nowrap;
+    white-space: break-word;
 }
 .cmd .cmd-prompt > span {
     float: left;
@@ -274,8 +274,7 @@ terminal .terminal-output > div {
     margin-top: -1px;
 }
 .terminal-output > div.raw > div * {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    white-space: nowrap;
 }
 .terminal .terminal-font {
     position: absolute;

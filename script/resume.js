@@ -1,4 +1,8 @@
+// figlet.defaults({fontPath: 'https://unpkg.com/figlet@1.4.0/fonts/'});
+// figlet.preloadFonts(["Standard", "Colossal"], ready);
+
 var db = firebase.firestore();
+
 let admin = false;
 let t = $('#terminal').terminal({
     help: function() {
@@ -13,10 +17,21 @@ let t = $('#terminal').terminal({
             ,{raw:true}
         );
         if(admin){
+            t.echo(
             'List of Admin Commands:<br>'+
-            ' - <a href="javascript:t.exec(\'add\')" class="navlink">add</a><br>'+
-            ' - <a href="javascript:t.exec(\'edit\')" class="navlink">edit</a><br><br>'
+            ' - add &nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'add education\')" class="navlink">education</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'add organization\')" class="navlink">organization</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'add experience\')" class="navlink">experience</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'add portfolio\')" class="navlink">portfolio</a>]<br><br>'+
+            ' - delete [<a href="javascript:t.exec(\'delete education\')" class="navlink">education</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'delete organization\')" class="navlink">organization</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'delete experience\')" class="navlink">experience</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'delete portfolio\')" class="navlink">portfolio</a>]<br><br>'+
+            ' - edit &nbsp&nbsp[<a href="javascript:t.exec(\'edit introduction\')" class="navlink">introduction</a>]<br>'+
+            ' &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp[<a href="javascript:t.exec(\'edit links\')" class="navlink">links</a>]<br><br>'+
+            ' - <a href="javascript:t.exec(\'logout\')" class="navlink">logout</a><br><br>'
             ,{raw:true}
+            );
         }
         // console.log(firebase.auth().currentUser)
     },
@@ -32,7 +47,8 @@ let t = $('#terminal').terminal({
                     console.log("user is signed in yo");
                     // t.set_prompt('[[;#16C60C;]'+u+']:[[;#3B78FF;]~]$ ');
                     // t.clear();
-                    t.echo("[[;#B4009E;]ADMINISTRATOR LOGGED IN]: type help to see admin commands");
+                    t.echo("[[;#B4009E;]ADMINISTRATOR LOGGED IN]");
+                    t.echo('type <a href="javascript:t.exec(\'help\')" class="navlink">help</a> to see admin commands',{raw:true});
                 }).catch(function(err){
                     t.echo('[[b;red;;;]'+err.message+']');
                     console.log(err.message);
@@ -51,11 +67,21 @@ let t = $('#terminal').terminal({
             prompt: 'email: '
         });
     },
+
+    logout: function() {
+        firebase.auth().signOut().then(function() {
+            t.echo("[[;#B4009E;]ADMINISTRATOR LOGGED OUT]");
+            admin = 0;
+          }).catch(function(err) {
+            t.echo('[[b;red;;;]'+err.message+']');
+            console.log(err.message);
+          });
+    },
     
     about: function(){
         t.echo('\n');
         t.echo(    
-            '<div class="bounce"><span class="contents">'+
+            '<div class="bounce" style="color:#E74856"><span class="contents">'+
             '...d8b...............888.......888......d8b.888.888.....................................<br>'+
             '...Y8P...............888.......888......Y8P.888.888.....................................<br>'+
             '.....................888.......888..........888.888.....................................<br>'+
@@ -95,7 +121,7 @@ let t = $('#terminal').terminal({
     education: function() {
         t.echo('\n');
         t.echo(
-            '<div class="bounce"><span class="contents">'+
+            '<div class="bounce" style="color:#16C60C"><span class="contents">'+
             '..............888............................888....d8b...................<br>'+
             '..............888............................888....Y8P...................<br>'+
             '..............888............................888..........................<br>'+
@@ -128,7 +154,7 @@ let t = $('#terminal').terminal({
     organization: function() {
         t.echo('\n');
         t.echo(
-            '<div class="bounce"><span class="contents">'+
+            '<div class="bounce" style="color:#61D6D6"><span class="contents">'+
             '...........................................d8b...................888....d8b...................<br>'+
             '...........................................Y8P...................888....Y8P...................<br>'+
             '.................................................................888..........................<br>'+
@@ -143,12 +169,25 @@ let t = $('#terminal').terminal({
             '</span></div>'
         ,{raw: true});
         t.echo('\n');
+        db.collection("organization").get().then(function(snapshot){
+            snapshot.forEach(function(doc){
+                d = doc.data();
+                console.log(doc.id);
+                t.echo(
+                    '<b style="color:#fff">'+d.name+'</b><br>'+
+                    d.position+'<br>'+
+                    d.year_start+"-"+d.year_end
+                    ,{raw:true}
+                );
+                t.echo('\n');
+            })
+        });
     },
 
     experience: function() {
         t.echo('\n');
         t.echo(
-            '<div class="bounce"><span class="contents">'+
+            '<div class="bounce" style="color:#C19C00"><span class="contents">'+
             '............................................d8b....................................<br>'+
             '............................................Y8P....................................<br>'+
             '...................................................................................<br>'+
@@ -163,12 +202,26 @@ let t = $('#terminal').terminal({
             '</span></div>'
         ,{raw: true});
         t.echo('\n');
+        db.collection("experience").get().then(function(snapshot){
+            snapshot.forEach(function(doc){
+                d = doc.data();
+                console.log(doc.id);
+                t.echo(
+                    '<b style="color:#fff">'+d.company+'</b><br>'+
+                    d.position+
+                    '('+d.year_start+"-"+d.year_end+')<br>'+
+                    d.description
+                    ,{raw:true}
+                );
+                t.echo('\n');
+            })
+        });
     },
 
     portfolio: function() {
         t.echo('\n');
         t.echo(
-            '<div class="bounce"><span class="contents">'+
+            '<div class="bounce" style="color:#B4009E"><span class="contents">'+
             '..........................888......d888.........888.d8b..........<br>'+
             '..........................888....d88P"..........888.Y8P..........<br>'+
             '..........................888....888............888..............<br>'+
@@ -183,12 +236,24 @@ let t = $('#terminal').terminal({
             '</span></div>'
         ,{raw: true});
         t.echo('\n');
+        db.collection("portfolio").get().then(function(snapshot){
+            snapshot.forEach(function(doc){
+                d = doc.data();
+                console.log(doc.id);
+                t.echo(
+                    '<b style="color:#fff">'+d.name+' ('+d.year+')</b><br>'+
+                    d.description+'<br>'
+                    ,{raw:true}
+                );
+                t.echo('\n');
+            })
+        });
     },
 
     contact: function() {
         t.echo('\n');
         t.echo(
-            '<div class="bounce"><span class="contents">'+
+            '<div class="bounce" style="color:#3B78FF"><span class="contents">'+
             '..........................888......................888....<br>'+
             '..........................888......................888....<br>'+
             '..........................888......................888....<br>'+
@@ -203,6 +268,17 @@ let t = $('#terminal').terminal({
             '</span></div>'
         ,{raw: true});
         t.echo('\n');
+        db.collection("other").doc("links").get().then(function(field){
+                let f = field.data();
+                t.echo(
+                    '<a href="'+f.linkedin+'" class="navlink">LinkedIn</a>'
+                    ,{raw:true}
+                );
+                t.echo(
+                    '<a href="'+f.github+'" class="navlink">GitHub</a>'
+                    ,{raw:true}
+                );
+        });
     },
 
     add: function(coll){
@@ -210,6 +286,7 @@ let t = $('#terminal').terminal({
         let deg;
         let ys;
         let ye;
+        let des;
 
         if(coll.toLowerCase()=="education"){
             this.push(function(year_end) {
@@ -268,6 +345,177 @@ let t = $('#terminal').terminal({
                 prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n\nSchool: '
             });
         }
+        if(coll.toLowerCase()=="organization"){
+            this.push(function(year_end) {
+                if (year_end) {
+                    this.pop();
+                    ye = year_end;
+                    db.collection("organization").add({
+                        name: sch,
+                        position: deg,
+                        year_start: ys,
+                        year_end: ye
+                    })
+                    .then(function(ref){
+                        console.log("Document written with ID: ", ref.id);
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                    })
+                    .catch(function(err){
+                        console.error("Error adding document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Year End: '
+            });
+            this.push(function(year_start) {
+                if (year_start) {
+                    this.pop();
+                    ys = year_start;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Year Start: '
+            });
+            this.push(function(degree) {
+                if (degree) {
+                    this.pop();
+                    deg = degree;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Position: '
+            });
+            this.push(function(school) {
+                if (school) {
+                    this.pop();
+                    sch = school;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n\nName: '
+            });
+        }
+        if(coll.toLowerCase()=="experience"){
+            this.push(function(year_end) {
+                if (year_end) {
+                    this.pop();
+                    ye = year_end;
+                    db.collection("experience").add({
+                        company: sch,
+                        position: deg,
+                        description: des,
+                        year_start: ys,
+                        year_end: ye
+                    })
+                    .then(function(ref){
+                        console.log("Document written with ID: ", ref.id);
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                    })
+                    .catch(function(err){
+                        console.error("Error adding document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Year End: '
+            });
+            this.push(function(year_start) {
+                if (year_start) {
+                    this.pop();
+                    ys = year_start;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Year Start: '
+            });
+            this.push(function(description) {
+                if (description) {
+                    this.pop();
+                    des = description;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Description: '
+            });
+            this.push(function(degree) {
+                if (degree) {
+                    this.pop();
+                    deg = degree;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Position: '
+            });
+            this.push(function(school) {
+                if (school) {
+                    this.pop();
+                    sch = school;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n\nCompany: '
+            });
+        }
+        if(coll.toLowerCase()=="portfolio"){
+            this.push(function(year_end) {
+                if (year_end) {
+                    this.pop();
+                    ye = year_end;
+                    db.collection("portfolio").add({
+                        name: sch,
+                        description: des,
+                        year: ye
+                    })
+                    .then(function(ref){
+                        console.log("Document written with ID: ", ref.id);
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                    })
+                    .catch(function(err){
+                        console.error("Error adding document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Year: '
+            });
+            this.push(function(description) {
+                if (description) {
+                    this.pop();
+                    des = description;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Description: '
+            });
+            this.push(function(school) {
+                if (school) {
+                    this.pop();
+                    sch = school;
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n\nName: '
+            });
+        }
     },
 
     delete: function(coll){
@@ -310,6 +558,121 @@ let t = $('#terminal').terminal({
             this.resume();
             }, 300);
         }
+        if(coll.toLowerCase() == 'organization'){
+            db.collection("organization").get().then(function(snapshot){
+                let i = 0;
+                snapshot.forEach(function(doc){
+                    d = doc.data();
+                    doc_id[i] = doc.id;
+                    console.log('The ID for '+i+' is '+doc_id[i]);
+                    t.echo(
+                        '[<a href="javascript:t.exec(\''+i+'\')" class="navlink">x</a>]  '+i.toString()+'   '+d.name+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.position+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.year_start+"-"+d.year_end
+                        ,{raw: true}
+                        );
+                    t.echo('\n');
+                    i++;
+                })
+            });
+            this.pause();
+            setTimeout(() => {
+                 
+            this.push(function(del){
+                if(del){
+                    this.pop();
+                    console.log('Attempting to delete '+doc_id[del]);
+                    db.collection("organization").doc(doc_id[del]).delete().then(function() {
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                    }).catch(function(err) {
+                        console.error("Error removing document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }
+            }, {
+                prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n'+'\nEnter the index number of the field to delete: '
+            });
+            this.resume();
+            }, 300);
+        }
+        if(coll.toLowerCase() == 'experience'){
+            db.collection("experience").get().then(function(snapshot){
+                let i = 0;
+                snapshot.forEach(function(doc){
+                    d = doc.data();
+                    doc_id[i] = doc.id;
+                    console.log('The ID for '+i+' is '+doc_id[i]);
+                    t.echo(
+                        '[<a href="javascript:t.exec(\''+i+'\')" class="navlink">x</a>]  '+i.toString()+'   '+d.company+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.position+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.year_start+"-"+d.year_end+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.description
+                        ,{raw: true}
+                        );
+                    t.echo('\n');
+                    i++;
+                })
+            });
+            this.pause();
+            setTimeout(() => {
+                 
+            this.push(function(del){
+                if(del){
+                    this.pop();
+                    console.log('Attempting to delete '+doc_id[del]);
+                    db.collection("experience").doc(doc_id[del]).delete().then(function() {
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                    }).catch(function(err) {
+                        console.error("Error removing document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }
+            }, {
+                prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n'+'\nEnter the index number of the field to delete: '
+            });
+            this.resume();
+            }, 300);
+        }
+        if(coll.toLowerCase() == 'portfolio'){
+            db.collection("portfolio").get().then(function(snapshot){
+                let i = 0;
+                snapshot.forEach(function(doc){
+                    d = doc.data();
+                    doc_id[i] = doc.id;
+                    console.log('The ID for '+i+' is '+doc_id[i]);
+                    t.echo(
+                        '[<a href="javascript:t.exec(\''+i+'\')" class="navlink">x</a>]  '+i.toString()+'   '+d.name+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.description+
+                        '<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'+d.year
+                        ,{raw: true}
+                        );
+                    t.echo('\n');
+                    i++;
+                })
+            });
+            this.pause();
+            setTimeout(() => {
+                 
+            this.push(function(del){
+                if(del){
+                    this.pop();
+                    console.log('Attempting to delete '+doc_id[del]);
+                    db.collection("portfolio").doc(doc_id[del]).delete().then(function() {
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                    }).catch(function(err) {
+                        console.error("Error removing document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }
+            }, {
+                prompt: 'Press [[b!;#fff;;;]CTRL+D] to cancel.\n'+'\nEnter the index number of the field to delete: '
+            });
+            this.resume();
+            }, 300);
+        }
     },
 
     edit: function(coll){
@@ -320,13 +683,33 @@ let t = $('#terminal').terminal({
                 console.log(intro);
                 t.insert(intro);
             });
-            
+            this.push(function(str) {
+                if (str) {
+                    this.pop();
+                    db.collection("other").doc("intro").update({color:str}).then(function() {
+                        t.echo('[[b;green;;;]SUCCESS!!!]');
+                        location.reload();
+                    }).catch(function(err) {
+                        console.error("Error editing document: ", err);
+                        t.echo('[[b;red;;;]FAILURE!!!]');
+                        t.echo(err);
+                    });
+                }else{
+                    console.log('no input');
+                }
+            }, {
+                prompt: 'Edit message color: \n'
+            });
             this.push(function(str) {
                 if (str) {
                     this.pop();
                     db.collection("other").doc("intro").update({value:str}).then(function() {
                         t.echo('[[b;green;;;]SUCCESS!!!]');
-                        location.reload();
+                        db.collection("other").doc("intro").get().then(function(val){
+                            let color = val.data().color;
+                            console.log(color);
+                            t.insert(color);
+                        });
                     }).catch(function(err) {
                         console.error("Error editing document: ", err);
                         t.echo('[[b;red;;;]FAILURE!!!]');
@@ -364,16 +747,6 @@ t.echo(
     ,{raw: true}
 );
 t.echo('\n');
-t.echo(
-    'Use these commands to get started:<br>'+
-    ' - <a href="javascript:t.exec(\'about\')" class="navlink">about</a><br>'+
-    ' - <a href="javascript:t.exec(\'education\')" class="navlink">education</a><br>'+
-    ' - <a href="javascript:t.exec(\'organization\')" class="navlink">organization</a><br>'+
-    ' - <a href="javascript:t.exec(\'experience\')" class="navlink">experience</a><br>'+
-    ' - <a href="javascript:t.exec(\'portfolio\')" class="navlink">portfolio</a><br>'+
-    ' - <a href="javascript:t.exec(\'contact\')" class="navlink">contact</a><br><br>'
-    ,{raw:true}
-);
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         // console.log(user.email)

@@ -917,7 +917,7 @@ function ready() {
             );
         }
         console.log(window.location.pathname)
-        if(window.location.pathname=="/edit.html"){
+        if(window.location.pathname=="/edit.html"||window.location.pathname=="/ccapdev-mp1/edit.html"){
             t.echo('type <a href="javascript:t.exec(\'login\')" class="navlink">login</a> to start</b>',{raw: true});
         }else{
             t.echo(
